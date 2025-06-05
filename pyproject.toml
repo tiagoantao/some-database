@@ -5,9 +5,9 @@ description = "Learning how to write a database"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "mermaid-py>=0.8.0",
     "pillow>=11.2.1",
     "pydantic>=2.11.4",
-    "pygraphviz>=1.14",
     "rich>=14.0.0",
     "sqlparse>=0.5.3",
     "textual>=3.2.0",
