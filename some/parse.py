@@ -1,12 +1,9 @@
-import logging as log
 from enum import Enum
 
 from pydantic import BaseModel
 
-from rich import print
 import sqlparse
 from sqlparse.sql import Function, Identifier, Parenthesis, Statement, Token
-
 
 # Explain the prefix Some
 
@@ -16,36 +13,32 @@ class SomeSQLType(Enum):
     VARCHAR = "VARCHAR"
 
 
-class SomeStatementType(Enum):
-    CREATE_TABLE = "CREATE TABLE"
-    INSERT = "INSERT"
-    SELECT = "SELECT"
-
-
 class SomeColumnDefinition(BaseModel):
     name: str
     type: SomeSQLType
     length: int | None = None
 
 
-class SomeCreateTable(BaseModel):
+class SomeSQLStatementBase(BaseModel):
+    pass
+
+
+class SomeCreateTable(SomeSQLStatementBase):
     columns: list[SomeColumnDefinition]
     name: str
 
 
-class SomeInsertInto(BaseModel):
+class SomeInsertInto(SomeSQLStatementBase):
     table_name: str
     column_names: list[str]
     values: list
 
 
-class SomeSelect(BaseModel):
+class SomeSelect(SomeSQLStatementBase):
     table_name: str
 
 
-class SomeSQLStatement(BaseModel):
-    type: SomeStatementType
-    statement: SomeCreateTable | SomeInsertInto | SomeSelect
+SomeSQLStatement = SomeCreateTable | SomeInsertInto | SomeSelect
 
 
 def get_varchar_size(token: Function) -> int:
@@ -67,10 +60,16 @@ def parse_column_definitions(parenthesis: Parenthesis) -> list[SomeColumnDefinit
         elif j % 3 == 1:
             if isinstance(token, Function):
                 size = get_varchar_size(token)
-                column_definitions.append(SomeColumnDefinition(name=column_name, type=SomeSQLType.VARCHAR, length=size))
+                column_definitions.append(
+                    SomeColumnDefinition(
+                        name=column_name, type=SomeSQLType.VARCHAR, length=size
+                    )
+                )
             elif isinstance(token, Token):
                 if token.value.upper() == "INT":
-                    column_definitions.append(SomeColumnDefinition(name=column_name, type=SomeSQLType.INT))
+                    column_definitions.append(
+                        SomeColumnDefinition(name=column_name, type=SomeSQLType.INT)
+                    )
                 else:
                     raise ValueError(f"Expected INT or VARCHAR, got {token.value}")
             else:
@@ -84,13 +83,11 @@ def parse_create_table(stmt: Statement) -> SomeCreateTable:
     table_name = None
     column_definitions = []
     for i, token in enumerate(tokens):
-        #print(i, token.ttype, token, type(token))
         if i == 1:
-           if str(token.ttype) != "Token.Keyword" or token.value != "TABLE":
-               raise ValueError("Expected 'TABLE' keyword after 'CREATE'")
+            if str(token.ttype) != "Token.Keyword" or token.value != "TABLE":
+                raise ValueError("Expected 'TABLE' keyword after 'CREATE'")
         elif i == 2:
-            #print(i, token.ttype, token, type(token))
-            if not isinstance(token,Identifier):
+            if not isinstance(token, Identifier):
                 raise ValueError("Expected table name after 'CREATE TABLE'")
             table_name = token.value
         if isinstance(token, Parenthesis):
@@ -117,7 +114,7 @@ def parse_insert_into_column_names(stmt: Statement) -> list[str]:
 
 def parse_insert_into(stmt: Statement) -> tuple[str, list[str]]:
     tokens = [token for token in stmt.tokens if not token.is_whitespace]
-    table_name = ''
+    table_name = ""
     column_names = []
     for j, token in enumerate(tokens):
         if j == 0:
@@ -126,12 +123,16 @@ def parse_insert_into(stmt: Statement) -> tuple[str, list[str]]:
             column_names = parse_insert_into_column_names(token)
     return table_name, column_names
 
+
 def parse_insert_values(stmt: Statement) -> list[str]:
     tokens = [token for token in stmt.tokens if not token.is_whitespace]
     column_names = []
     for j, token in enumerate(tokens):
-        if j==1:
-            vtokens = [str(vtoken) for vtoken in token.tokens[1]  if not vtoken.is_whitespace ]
+        if j == 1:
+            vtokens = [
+                str(vtoken) for vtoken in token.tokens[1] if not vtoken.is_whitespace
+            ]
+            vtokens = [t.replace("'", "") for t in vtokens]
             column_names = vtokens[::2]
     return column_names
 
@@ -140,11 +141,11 @@ def parse_insert(stmt: Statement) -> SomeInsertInto:
     tokens = [token for token in stmt.tokens if not token.is_whitespace]
     do_into = False
     do_values = False
-    table_name = ''
+    table_name = ""
     column_names = []
     values = []
     for i, token in enumerate(tokens):
-        if str(token.ttype)== 'Token.Keyword' and token.value == 'INTO':
+        if str(token.ttype) == "Token.Keyword" and token.value == "INTO":
             do_into = True
         elif do_into:
             table_name, column_names = parse_insert_into(token)
@@ -152,8 +153,10 @@ def parse_insert(stmt: Statement) -> SomeInsertInto:
             do_values = True
         elif do_values:
             values = parse_insert_values(token)
-            print(values)
-    return SomeInsertInto(table_name=table_name, column_names=column_names,values=values)
+    return SomeInsertInto(
+        table_name=table_name, column_names=column_names, values=values
+    )
+
 
 def parse_select(stmt: Statement) -> SomeSelect:
     tokens = [token for token in stmt.tokens if not token.is_whitespace]
@@ -166,22 +169,10 @@ def parse(statement_text: str) -> SomeSQLStatement:
     stmt = p[0]
     statement_type_text = stmt.get_type()
     if statement_type_text == "CREATE":
-        return SomeSQLStatement(type=SomeStatementType.CREATE_TABLE, statement= parse_create_table(stmt))
+        return parse_create_table(stmt)
     elif statement_type_text == "INSERT":
-        return SomeSQLStatement(type=SomeStatementType.INSERT, statement=parse_insert(stmt))
+        return parse_insert(stmt)
     elif statement_type_text == "SELECT":
-        return SomeSQLStatement(type=SomeStatementType.SELECT, statement=parse_select(stmt))
+        return parse_select(stmt)
     else:
         raise ValueError(f"Still not processing {statement_type_text}")
-
-
-query1 = "CREATE TABLE users (id INT, name VARCHAR(100))"
-query2 = 'INSERT INTO users (id, name) VALUES (1, "Jane Doe")'
-# ^^^ check SQL quotation type, probably wrong XXX
-query3 = "SELECT * FROM users"
-
-query = query3
-
-if __name__ == "__main__":
-    log.basicConfig(level=log.DEBUG)
-    print(parse(query))
