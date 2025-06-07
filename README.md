@@ -7,7 +7,4 @@ it into several versions. Each version will be available on a different git bran
 
 | Version | Description |
 |---------|-------------|
-| [basic](tree/basic) | Basic SQL with `CREATE TABLE`, `INSERT` and `SELECT` |
-
-
-
+| [basic](https://github.com/tiagoantao/some-database/tree/basic) | Basic SQL with `CREATE TABLE`, `INSERT` and `SELECT` |
