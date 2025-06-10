@@ -4,3 +4,4 @@ RUN apt-get update && apt-get install -y graphviz
 RUN mkdir /data
 WORKDIR /data
 
+CMD ["bash", "/data/generate_bitmaps.sh"]

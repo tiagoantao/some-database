@@ -1,11 +1,11 @@
 
 digraph G {
     A [label="SQL Query"]
-    B [label="SQL Parser"]
-    C [label="Query Compiler"]
-    D [label="Query Optimizer"]
-    E [label="Execution Plan Generator"]
-    F [label="Query Executor"]
+    B [label="SQL Parser" shape=rect]
+    C [label="Query Compiler" shape=rect]
+    D [label="Query Optimizer" shape=rect]
+    E [label="Execution Plan Generator" shape=rect]
+    F [label="Query Executor" shape=rect]
 
     A -> B
     B -> C

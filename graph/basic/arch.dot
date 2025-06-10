@@ -1,0 +1,9 @@
+
+digraph G {
+    A [label="SQL Query"]
+    B [label="SQL Parser" shape="rect"]
+    F [label="Query Executor" shape="rect"]
+
+    A -> B
+    B -> F
+}
