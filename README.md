@@ -14,3 +14,12 @@ it into several versions. Each version will be available on a different git bran
 ## Stuff in the main branch
 
 In the main branch there are only Graphviz files that are used in Substack.
+
+You can generate the graphs by doing:
+
+```sh
+cd graph
+bash run_docler.sh
+```
+
+Docker is required.
