@@ -37,13 +37,15 @@ def insert_into(insert_definition: SomeInsertInto) -> None:
         writer.writerow(insert_definition.values)
 
 
-# vvv not a great return type...
-def select(select_definition: SomeSelect) -> tuple[list[str], list[list[str]]]:
+def select(select_definition: SomeSelect) -> SomeSelectResult:
     with open(DATABASE_PATH / f"{select_definition.table_name}.csv", "r") as f:
         reader = csv.reader(f, delimiter="\t")
         header = next(reader)  # get the header
         rows = [row for row in reader]
-        return header, rows
+        return SomeSelectResult(
+            column_names=header,
+            rows=rows,
+        )
 
 
 def execute(statement: SomeSQLStatement) -> SomeResult:
@@ -55,5 +57,5 @@ def execute(statement: SomeSQLStatement) -> SomeResult:
         insert_into(statement)
         return SomeNone()
     elif isinstance(statement, SomeSelect):
-        column_names, rows = select(statement)
-        return SomeSelectResult(column_names=column_names, rows=rows)
+        select_result = select(statement)
+        return select_result
