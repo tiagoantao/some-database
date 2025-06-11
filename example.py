@@ -12,7 +12,7 @@ if __name__ == "__main__":
     log.basicConfig(level=log.DEBUG)
     for query in (query1, query2, query3):
         parsed_statement = parse.parse(query)
-        print(f"Parsed statement: {type(parsed_statement)}")
+        print(f"Parsed statement:\n{type(parsed_statement)}")
         print(parsed_statement)
         result = engine.execute(parsed_statement)
         if type(result) is engine.SomeSelectResult:
