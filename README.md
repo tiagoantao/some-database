@@ -27,6 +27,6 @@ bash run_docker.sh
 
 Docker is required.
 
-<div align="center;">
+<div align="center">
   <img src="logo.png" width="400"/>
 </div>
