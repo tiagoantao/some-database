@@ -4,8 +4,9 @@ We are going to create a relational database together.
 
 All the tutorials and documentation will be available on [Substack](https://tiagoantao.substack.com/).
 
-In order to learn how to do it - our real objective - we are going to split
-it into several versions. Each version will be available on a different git branch.
+> [!NOTE]
+> In order to learn how to do it - our real objective - we are going to split
+> it into several versions. Each version will be available on a different git branch.
 
 | Version | Description |
 |---------|-------------|
@@ -19,7 +20,7 @@ You can generate the graphs by doing:
 
 ```sh
 cd graph
-bash run_docler.sh
+bash run_docker.sh
 ```
 
 Docker is required.
