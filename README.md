@@ -26,3 +26,5 @@ bash run_docker.sh
 ```
 
 Docker is required.
+
+<img src="logo.png" width="400"/>
