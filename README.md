@@ -6,7 +6,9 @@ All the tutorials and documentation will be available on [Substack](https://tiag
 
 > [!NOTE]
 > In order to learn how to do it - our real objective - we are going to split
-> it into several versions. Each version will be available on a different git branch.
+> it into several versions
+>
+> **Each version will be available on a different git branch**
 
 | Version | Description |
 |---------|-------------|
