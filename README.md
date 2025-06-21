@@ -13,7 +13,7 @@ All the tutorials and documentation will be available on [Substack](https://tiag
 | Version | Description |
 |---------|-------------|
 | [basic](https://github.com/tiagoantao/some-database/tree/basic) | Basic SQL with `CREATE TABLE`, `INSERT` and `SELECT` |
-| calm | `SELECT WHERE` and query compilation|
+| [calm](https://github.com/tiagoantao/some-database/tree/calm) | `SELECT WHERE` and metadata|
 
 ## Stuff in the main branch
 
