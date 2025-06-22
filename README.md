@@ -3,7 +3,7 @@
 We are going to create a relational database together.
 
 > [!NOTE]
-> This is the basic version.
+> This is the basic version. For all the other versions check the [main repository](../..)
 
 ## Intro
 
