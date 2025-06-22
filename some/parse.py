@@ -17,6 +17,7 @@ class SomeSQLType(Enum):
     VARCHAR : str
         Represents a variable character string type in SQL.
     """
+
     INT = "INT"
     VARCHAR = "VARCHAR"
 
@@ -34,6 +35,7 @@ class SomeColumnDefinition(BaseModel):
     length : int or None
         The length of the column if applicable (e.g., VARCHAR).
     """
+
     name: str
     type: SomeSQLType
     length: int | None = None
@@ -45,22 +47,13 @@ class SomeSQLStatementBase(BaseModel):
 
     Serves as a parent class for different types of SQL statements.
     """
+
     pass
 
 
 class SomeCreateTable(SomeSQLStatementBase):
-    """
-    Represents a CREATE TABLE SQL statement.
-
-    Attributes
-    ----------
-    columns : list of SomeColumnDefinition
-        Definitions of the columns to be created.
-    name : str
-        Name of the table to be created.
-    """
-    columns: list[SomeColumnDefinition]
     name: str
+    columns: list[SomeColumnDefinition]
 
 
 class SomeInsertInto(SomeSQLStatementBase):
@@ -76,24 +69,21 @@ class SomeInsertInto(SomeSQLStatementBase):
     values : list
         Values to be inserted into the columns.
     """
+
     table_name: str
     column_names: list[str]
     values: list
 
 
 class SomeSelect(SomeSQLStatementBase):
-    """
-    Represents a SELECT SQL statement.
-
-    Attributes
-    ----------
-    table_name : str
-        Name of the table to select from.
-    """
     table_name: str
 
 
-SomeSQLStatement = SomeCreateTable | SomeInsertInto | SomeSelect
+class SomeShowTables(SomeSQLStatementBase):
+    pass
+
+
+SomeSQLStatement = SomeCreateTable | SomeInsertInto | SomeSelect | SomeShowTables
 
 
 def get_varchar_size(token: Function) -> int:
@@ -320,19 +310,6 @@ def parse_insert(stmt: Statement) -> SomeInsertInto:
 
 
 def parse_select(stmt: Statement) -> SomeSelect:
-    """
-    Parses a SELECT SQL statement into a SomeSelect object.
-
-    Parameters
-    ----------
-    stmt : Statement
-        The SQL statement to parse.
-
-    Returns
-    -------
-    SomeSelect
-        The parsed representation of the SELECT statement.
-    """
     tokens = [token for token in stmt.tokens if not token.is_whitespace]
     return SomeSelect(table_name=tokens[3].value)
 
