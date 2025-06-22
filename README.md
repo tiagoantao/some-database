@@ -2,8 +2,8 @@
 
 We are going to create a relational database together.
 
-> [NOTE]
-> This is the basic version.
+> [!NOTE]
+> This is the calm version. For all the other versions check the [main repository](../..)
 
 ## Intro
 
@@ -17,6 +17,6 @@ Have a look at the [example](example.py). Run it by doing
 
 `uv run example.py`
 
-The [TUI](tui.py) version can be run like this:
+The [TUI](tui.py) version can be run like this
 
 `uv run tui.py`
