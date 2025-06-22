@@ -2,7 +2,7 @@
 
 We are going to create a relational database together.
 
-> [NOTE]
+> [!NOTE]
 > This is the basic version.
 
 ## Intro
