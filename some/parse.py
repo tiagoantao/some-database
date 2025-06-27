@@ -343,5 +343,16 @@ def parse(statement_text: str) -> SomeSQLStatement:
         return parse_insert(stmt)
     elif statement_type_text == "SELECT":
         return parse_select(stmt)
+    elif statement_type_text == "UNKNOWN":
+        # sqlparse doesn't know about SHOW TABLES
+        tokens = [token for token in stmt.tokens if not token.is_whitespace]
+        if (
+            len(tokens) == 2
+            and tokens[0].value.upper() == "SHOW"
+            and tokens[1].value.upper() == "TABLES"
+        ):
+            return SomeShowTables()
+        else:
+            raise ValueError(f"Still not processing {statement_text}")
     else:
         raise ValueError(f"Still not processing {statement_type_text}")

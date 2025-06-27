@@ -3,7 +3,13 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from .parse import SomeCreateTable, SomeInsertInto, SomeSelect, SomeSQLStatement
+from .parse import (
+    SomeCreateTable,
+    SomeInsertInto,
+    SomeSelect,
+    SomeShowTables,
+    SomeSQLStatement,
+)
 
 DATABASE_PATH = Path.cwd() / "DB"
 DATABASE_PATH.mkdir(parents=True, exist_ok=True)
@@ -22,7 +28,11 @@ class SomeSelectResult(SomeResultBase):
     rows: list[list[str]]
 
 
-SomeResult = SomeNone | SomeSelectResult
+class SomeShowTablesResult(SomeResultBase):
+    table_names: list[str]
+
+
+SomeResult = SomeNone | SomeSelectResult | SomeShowTablesResult
 
 
 def create_table(table_definition: SomeCreateTable) -> None:
@@ -48,6 +58,11 @@ def select(select_definition: SomeSelect) -> SomeSelectResult:
         )
 
 
+def show_tables() -> SomeShowTablesResult:
+    table_names = [p.stem for p in DATABASE_PATH.glob("*.csv")]
+    return SomeShowTablesResult(table_names=table_names)
+
+
 def execute(statement: SomeSQLStatement) -> SomeResult:
     # Sadly mypy doesn't understand the match statement yet
     if isinstance(statement, SomeCreateTable):
@@ -59,3 +74,5 @@ def execute(statement: SomeSQLStatement) -> SomeResult:
     elif isinstance(statement, SomeSelect):
         select_result = select(statement)
         return select_result
+    elif isinstance(statement, SomeShowTables):
+        return show_tables()
