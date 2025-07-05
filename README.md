@@ -7,9 +7,13 @@ We are going to create a relational database together.
 
 ## Intro
 
-This version supports a basic `CREATE TABLE` along with `INSERT` and `SELECT` statements.
+This version supports:
 
-You can find all related tutorials and documentation on our [Substack](https://tiagoantao.substack.com/)
+- Basic `WHERE` clauses on `SELECT`
+- Some table metadata
+- A better TUI experience
+
+You can find all related tutorials to this version on our intro post on SubstackLINK
 
 ## Trying stuff
 
