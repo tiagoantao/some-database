@@ -13,7 +13,7 @@ This version supports:
 - Some table metadata
 - A better TUI experience
 
-You can find all related tutorials to this version on our intro post on SubstackLINK
+You can find all related tutorials and documentation on our [Substack](https://tiagoantao.substack.com/p/roadmap)
 
 ## Trying stuff
 
