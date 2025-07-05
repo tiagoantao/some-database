@@ -9,7 +9,7 @@ We are going to create a relational database together.
 
 This version supports a basic `CREATE TABLE` along with `INSERT` and `SELECT` statements.
 
-You can find all related tutorials and documentation on our [Substack](https://tiagoantao.substack.com/)
+You can find all related tutorials and documentation on our [Substack](https://tiagoantao.substack.com/p/roadmap)
 
 ## Trying stuff
 
