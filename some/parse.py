@@ -75,8 +75,15 @@ class SomeInsertInto(SomeSQLStatementBase):
     values: list
 
 
+class SomeWhereCondition(BaseModel):
+    column: str
+    operator: str
+    value: str | int
+
+
 class SomeSelect(SomeSQLStatementBase):
     table_name: str
+    where: SomeWhereCondition | None = None
 
 
 class SomeShowTables(SomeSQLStatementBase):
@@ -311,7 +318,43 @@ def parse_insert(stmt: Statement) -> SomeInsertInto:
 
 def parse_select(stmt: Statement) -> SomeSelect:
     tokens = [token for token in stmt.tokens if not token.is_whitespace]
-    return SomeSelect(table_name=tokens[3].value)
+
+    table_name = None
+    from_idx = -1
+    for i, token in enumerate(tokens):
+        if str(token.ttype) == "Token.Keyword" and token.value.upper() == "FROM":
+            from_idx = i
+            break
+
+    if from_idx != -1 and len(tokens) > from_idx + 1:
+        table_name = tokens[from_idx + 1].value
+    else:
+        raise ValueError("Could not find table name in SELECT statement")
+
+    where_clause = None
+    where_token = next(
+        (t for t in stmt.tokens if isinstance(t, sqlparse.sql.Where)), None
+    )
+    print(f"Where token: {where_token}")
+    if where_token:
+        where_tokens = [t for t in where_token.tokens if not t.is_whitespace]
+        print(f"Where tokens: {where_tokens}")
+        # After 'WHERE', we expect 'column op value'
+        if len(where_tokens) >= 4:
+            column = where_tokens[1].value
+            operator = where_tokens[2].value
+            value_token = where_tokens[3]
+            value = value_token.value
+            if value_token.ttype in sqlparse.tokens.Number.Integer:
+                value = int(value)
+            elif value_token.ttype is sqlparse.tokens.Literal.String.Single:
+                value = value.strip("'")
+
+            where_clause = SomeWhereCondition(
+                column=column, operator=operator, value=value
+            )
+
+    return SomeSelect(table_name=table_name, where=where_clause)
 
 
 def parse(statement_text: str) -> SomeSQLStatement:

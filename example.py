@@ -7,13 +7,16 @@ from some import engine, parse
 queries = [
     "CREATE TABLE users (id INT, name VARCHAR(100))",
     "INSERT INTO users (id, name) VALUES (1, 'Jane Doe')",
+    "INSERT INTO users (id, name) VALUES (2, 'John Doe')",
     "SELECT * FROM users",
+    "SELECT * FROM users WHERE id = 1",
     "SHOW TABLES",
 ]
 
 if __name__ == "__main__":
     log.basicConfig(level=log.DEBUG)
     for query in queries:
+        print(f"Executing query: {query}")
         parsed_statement = parse.parse(query)
         print(f"Parsed statement:\n{type(parsed_statement)}")
         print(parsed_statement)
