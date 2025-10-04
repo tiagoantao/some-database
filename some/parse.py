@@ -17,6 +17,7 @@ class SomeSQLType(Enum):
     VARCHAR : str
         Represents a variable character string type in SQL.
     """
+
     INT = "INT"
     VARCHAR = "VARCHAR"
 
@@ -34,6 +35,7 @@ class SomeColumnDefinition(BaseModel):
     length : int or None
         The length of the column if applicable (e.g., VARCHAR).
     """
+
     name: str
     type: SomeSQLType
     length: int | None = None
@@ -45,6 +47,7 @@ class SomeSQLStatementBase(BaseModel):
 
     Serves as a parent class for different types of SQL statements.
     """
+
     pass
 
 
@@ -59,6 +62,7 @@ class SomeCreateTable(SomeSQLStatementBase):
     name : str
         Name of the table to be created.
     """
+
     columns: list[SomeColumnDefinition]
     name: str
 
@@ -76,6 +80,7 @@ class SomeInsertInto(SomeSQLStatementBase):
     values : list
         Values to be inserted into the columns.
     """
+
     table_name: str
     column_names: list[str]
     values: list
@@ -90,6 +95,7 @@ class SomeSelect(SomeSQLStatementBase):
     table_name : str
         Name of the table to select from.
     """
+
     table_name: str
 
 
@@ -193,7 +199,7 @@ def parse_create_table(stmt: Statement) -> SomeCreateTable:
     column_definitions = []
     for i, token in enumerate(tokens):
         if i == 1:
-            if str(token.ttype) != "Token.Keyword" or token.value != "TABLE":
+            if str(token.ttype) != "Token.Keyword" or token.value.upper() != "TABLE":
                 raise ValueError("Expected 'TABLE' keyword after 'CREATE'")
         elif i == 2:
             if not isinstance(token, Identifier):
@@ -306,7 +312,7 @@ def parse_insert(stmt: Statement) -> SomeInsertInto:
     column_names = []
     values = []
     for i, token in enumerate(tokens):
-        if str(token.ttype) == "Token.Keyword" and token.value == "INTO":
+        if str(token.ttype) == "Token.Keyword" and token.value.upper() == "INTO":
             do_into = True
         elif do_into:
             table_name, column_names = parse_insert_into(token)
