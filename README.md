@@ -21,6 +21,6 @@ Have a look at the [example](example.py). Run it by doing
 
 `uv run example.py`
 
-The [TUI](tui.py) version can be run like this
+The [Streamlit web interface](ui.py) version can be run like this
 
-`uv run tui.py`
+`uv run streamlit ui.py`
