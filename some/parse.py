@@ -190,7 +190,7 @@ def parse_create_table(stmt: Statement) -> SomeCreateTable:
     column_definitions = []
     for i, token in enumerate(tokens):
         if i == 1:
-            if str(token.ttype) != "Token.Keyword" or token.value != "TABLE":
+            if str(token.ttype) != "Token.Keyword" or token.value.upper() != "TABLE":
                 raise ValueError("Expected 'TABLE' keyword after 'CREATE'")
         elif i == 2:
             if not isinstance(token, Identifier):
@@ -303,7 +303,7 @@ def parse_insert(stmt: Statement) -> SomeInsertInto:
     column_names = []
     values = []
     for i, token in enumerate(tokens):
-        if str(token.ttype) == "Token.Keyword" and token.value == "INTO":
+        if str(token.ttype) == "Token.Keyword" and token.value.upper() == "INTO":
             do_into = True
         elif do_into:
             table_name, column_names = parse_insert_into(token)
