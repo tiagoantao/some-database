@@ -1,4 +1,8 @@
 import csv
+<<<<<<< HEAD
+=======
+import os
+>>>>>>> 0e4de22 (describe support)
 import tomllib
 from pathlib import Path
 
@@ -7,6 +11,7 @@ from pydantic import BaseModel
 
 from .parse import (
     SomeCreateTable,
+    SomeDescribeTable,
     SomeInsertInto,
     SomeSelect,
     SomeShowTables,
@@ -80,8 +85,13 @@ def show_tables() -> SomeShowTablesResult:
     return SomeShowTablesResult(table_names=table_names)
 
 
+def describe_table(describe_definition: SomeDescribeTable) -> SomeDescribeTableResult:
+    with open(DATABASE_PATH / f"{describe_definition.table_name}.toml", "r") as f:
+        pass
+
 def execute(statement: SomeSQLStatement) -> SomeResult:
     # Sadly mypy doesn't understand the match statement yet
+    os.makedirs(DATABASE_PATH, exist_ok=True)
     if isinstance(statement, SomeCreateTable):
         create_table(statement)
         return SomeNone()
@@ -93,3 +103,5 @@ def execute(statement: SomeSQLStatement) -> SomeResult:
         return select_result
     elif isinstance(statement, SomeShowTables):
         return show_tables()
+    elif isinstance(statement, SomeDescribeTable):
+        return describe_table(statement)
