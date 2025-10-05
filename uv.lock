@@ -705,6 +705,7 @@ dependencies = [
     { name = "rich" },
     { name = "sqlparse" },
     { name = "streamlit" },
+    { name = "toml" },
 ]
 
 [package.dev-dependencies]
@@ -718,6 +719,7 @@ requires-dist = [
     { name = "rich", specifier = ">=14.0.0" },
     { name = "sqlparse", specifier = ">=0.5.3" },
     { name = "streamlit", specifier = ">=1.50.0" },
+    { name = "toml", specifier = ">=0.10.2" },
 ]
 
 [package.metadata.requires-dev]

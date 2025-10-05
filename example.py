@@ -1,3 +1,5 @@
+import os
+import shutil
 import logging as log
 
 from rich import print
@@ -11,10 +13,14 @@ queries = [
     "SELECT * FROM users",
     "SELECT * FROM users WHERE id = 1",
     "SHOW TABLES",
+    "DESCRIBE TABLE users",
 ]
 
 if __name__ == "__main__":
     log.basicConfig(level=log.DEBUG)
+    shutil.rmtree(engine.DATABASE_PATH)
+    os.makedirs(engine.DATABASE_PATH)
+
     for query in queries:
         print(f"Executing query: {query}")
         parsed_statement = parse.parse(query)

@@ -1,6 +1,8 @@
 import csv
+import tomllib
 from pathlib import Path
 
+import toml
 from pydantic import BaseModel
 
 from .parse import (
@@ -35,10 +37,25 @@ class SomeShowTablesResult(SomeResultBase):
 SomeResult = SomeNone | SomeSelectResult | SomeShowTablesResult
 
 
+def _create_table_to_toml(stmt: SomeCreateTable) -> dict:
+    return {
+        "columns": [
+            {
+                "name": col.name,
+                "type": str(col.type),
+                **({"length": col.length} if col.length is not None else {}),
+            }
+            for col in stmt.columns
+        ]
+    }
+
+
 def create_table(table_definition: SomeCreateTable) -> None:
     with open(DATABASE_PATH / f"{table_definition.name}.csv", "w") as f:
         writer = csv.writer(f, delimiter="\t")
         writer.writerow(map(lambda col: col.name, table_definition.columns))
+    with open(DATABASE_PATH / f"{table_definition.name}.toml", "w") as f:
+        toml.dump(_create_table_to_toml(table_definition), f)
 
 
 def insert_into(insert_definition: SomeInsertInto) -> None:

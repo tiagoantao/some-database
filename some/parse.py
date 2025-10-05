@@ -56,6 +56,10 @@ class SomeCreateTable(SomeSQLStatementBase):
     columns: list[SomeColumnDefinition]
 
 
+class SomeDescriveTable(SomeSQLStatementBase):
+    columns: list[SomeColumnDefinition]
+
+
 class SomeInsertInto(SomeSQLStatementBase):
     """
     Represents an INSERT INTO SQL statement.
