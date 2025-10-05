@@ -95,7 +95,7 @@ class SomeShowTables(SomeSQLStatementBase):
 
 
 class SomeDescribeTable(SomeSQLStatementBase):
-    str_name: str
+    table_name: str
 
 
 SomeSQLStatement = (
@@ -410,7 +410,7 @@ def parse(statement_text: str) -> SomeSQLStatement:
             and tokens[0].value.upper() == "DESCRIBE"
             and tokens[1].value.upper() == "TABLE"
         ):
-            return SomeDescribeTable(str_name=tokens[2].value)
+            return SomeDescribeTable(table_name=tokens[2].value)
         else:
             raise ValueError(f"Still not processing {statement_text}")
     else:

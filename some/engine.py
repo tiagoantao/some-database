@@ -1,8 +1,5 @@
 import csv
-<<<<<<< HEAD
-=======
 import os
->>>>>>> 0e4de22 (describe support)
 import tomllib
 from pathlib import Path
 
@@ -37,6 +34,10 @@ class SomeSelectResult(SomeResultBase):
 
 class SomeShowTablesResult(SomeResultBase):
     table_names: list[str]
+
+
+class SomeDescribeTableResult(SomeResultBase):
+    columns: dict[str, dict]  #  Not correct XXX
 
 
 SomeResult = SomeNone | SomeSelectResult | SomeShowTablesResult
@@ -86,8 +87,21 @@ def show_tables() -> SomeShowTablesResult:
 
 
 def describe_table(describe_definition: SomeDescribeTable) -> SomeDescribeTableResult:
-    with open(DATABASE_PATH / f"{describe_definition.table_name}.toml", "r") as f:
-        pass
+    transformed_dict = {}
+    with open(DATABASE_PATH / f"{describe_definition.table_name}.toml", "rb") as f:
+        data = tomllib.load(f)
+        column_list = data["columns"]
+        for column in column_list:
+            column_attributes = column.copy()
+
+            try:
+                name = column_attributes.pop("name")
+            except KeyError:
+                print(f"Warning: Column definition missing 'name' key: {column}")
+                continue
+            transformed_dict[name] = column_attributes
+    return SomeDescribeTableResult(columns=transformed_dict)
+
 
 def execute(statement: SomeSQLStatement) -> SomeResult:
     # Sadly mypy doesn't understand the match statement yet
