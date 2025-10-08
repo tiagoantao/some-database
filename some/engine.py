@@ -40,7 +40,9 @@ class SomeDescribeTableResult(SomeResultBase):
     columns: dict[str, dict]  #  Not correct XXX
 
 
-SomeResult = SomeNone | SomeSelectResult | SomeShowTablesResult
+SomeResult = (
+    SomeNone | SomeSelectResult | SomeShowTablesResult | SomeDescribeTableResult
+)
 
 
 def _create_table_to_toml(stmt: SomeCreateTable) -> dict:
